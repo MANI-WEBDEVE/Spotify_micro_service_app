@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import router from "./router.js";
 
 dotenv.config();  
  
@@ -17,6 +18,9 @@ const connectDB = async () => {
 const app = express();
 
 const PORT = process.env.PORT || 5000;
+
+app.use("/api/v1", router)
+
 app.get("/", (req, res) => {
   res.send("Hello World");
 });
