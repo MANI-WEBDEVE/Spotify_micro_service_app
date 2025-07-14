@@ -8,7 +8,9 @@ dotenv.config();
 const connectDB = async () => {
   console.log(process.env.MONGODB_URI); 
   try {
-    await mongoose.connect(process.env.MONGODB_URI as string);
+    await mongoose.connect(process.env.MONGODB_URI as string, {
+      dbName: "spotify_microservice"
+    });
     console.log("Connected to MongoDB"); 
   } catch (error) {
     console.log(error);
