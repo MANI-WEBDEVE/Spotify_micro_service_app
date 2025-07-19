@@ -1,6 +1,7 @@
 import express from "express"
 import dotenv from "dotenv"
 import { sql } from "./config/db.js"
+import adminRouter from "./route.js"
 
 dotenv.config()
 
@@ -36,7 +37,7 @@ async function initDB(){
     }
 }
 
-
+app.use("/api/v1", adminRouter)
 
 initDB().then(()=>{
     app.listen(PORT, ()=> {
