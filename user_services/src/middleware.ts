@@ -9,6 +9,7 @@ export interface AuthenticatedUser extends Request {
 export const isAuth = async (req: AuthenticatedUser, res: Response, next: NextFunction): Promise<void> => {
     try {
         const token = req.headers.token as string
+        console.log(req.headers.owner)
 
         if (!token) {
             res.status(403).json({

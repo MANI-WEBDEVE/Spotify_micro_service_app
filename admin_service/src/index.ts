@@ -2,11 +2,16 @@ import express from "express"
 import dotenv from "dotenv"
 import { sql } from "./config/db.js"
 import adminRouter from "./route.js"
+import { cloudinary_setup } from "./config/cloudinary.js"
 
 dotenv.config()
 
 const app = express()
 const PORT=process.env.PORT
+
+app.use(express.json()) 
+
+cloudinary_setup()
 
 async function initDB(){
     try{

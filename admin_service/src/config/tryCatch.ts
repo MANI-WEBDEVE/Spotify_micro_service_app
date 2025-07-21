@@ -9,7 +9,8 @@ export const tryCatch = (handler: RequestHandler): RequestHandler => {
             res.status(500).json({
                 success: false,
                 message: "Something Went Wrong",
-                error: error?.message
+                error: error?.message,
+                full_error: error
             })
         }
     }

@@ -8,7 +8,7 @@ export interface IUser extends Document {
     role: string;
     playlist: string[];
     createdAt: Date;
-    updatedAt: Date;
+    updatedAt: Date;            
 }
 
 const userSchema: Schema<IUser> = new Schema(

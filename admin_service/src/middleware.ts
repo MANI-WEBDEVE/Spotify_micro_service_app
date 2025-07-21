@@ -22,6 +22,8 @@ export const authAdmin = async (req: AuthenticatedUser, res: Response, next: Nex
     try {
         const token = req.headers.token as string
 
+        // console.log('token',token)
+
         if (!token) {
             return res.status(403).json({ message: "please Login" })
 
@@ -30,14 +32,18 @@ export const authAdmin = async (req: AuthenticatedUser, res: Response, next: Nex
         const { data } = await axios.get(`${process.env.User_URL as string}/api/v1/user/me`, {
             headers: {
                 token,
+                owner:"Muhammad Inam"
             }
         })
+
+        // console.log(`middleware check `, data)
+
         req.user = data;
         next()
 
     } catch (error) {
         return res.status(403).json(
-            { message: "Please Login" }
+            { message: "Please Login ttt" , error:error, url:process.env.User_URL }
         )
     }
 }
