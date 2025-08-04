@@ -52,13 +52,13 @@ export const addAlbum = tryCatch(async (req: AuthenticatedRequest, res) => {
         folder: "Albums"
     })
 
-//     const existFile = await sql`
-//   SELECT * FROM albums WHERE thumbnail = ${cloud.secure_url}
-// `;
-//     if (existFile.length > 0) {
-//         res.status(404).json({ message: "Thumbnail already exists" })
-//         return
-//     }
+    //     const existFile = await sql`
+    //   SELECT * FROM albums WHERE thumbnail = ${cloud.secure_url}
+    // `;
+    //     if (existFile.length > 0) {
+    //         res.status(404).json({ message: "Thumbnail already exists" })
+    //         return
+    //     }
 
     // console.log(`cloud for admin service: `, cloud)
 
@@ -97,7 +97,7 @@ export const addSongs = tryCatch(async (req: AuthenticatedRequest, res) => {
     SELECT * FROM songs WHERE title = ${title} AND description = ${description}
     `;
     if (exists.length > 0) {
-        res.status(404).json({message:"Title and Description already exist"})
+        res.status(404).json({ message: "Title and Description already exist" })
         return
     }
 
@@ -145,15 +145,15 @@ export const addSongs = tryCatch(async (req: AuthenticatedRequest, res) => {
     `
 
     res.status(200).json(
-        { message: "Add Song Succes", result :result }
+        { message: "Add Song Succes", result: result }
     )
 })
 
 
-export const addThumbnail=tryCatch(async(req:AuthenticatedRequest, res)=>{
-    if(req.user?.role !== "admin"){
+export const addThumbnail = tryCatch(async (req: AuthenticatedRequest, res) => {
+    if (req.user?.role !== "admin") {
         res.status(404).json(
-            {message:"You are Not Admin"}
+            { message: "You are Not Admin" }
         )
         return
     }
@@ -162,30 +162,30 @@ export const addThumbnail=tryCatch(async(req:AuthenticatedRequest, res)=>{
     SELECT * FROM songs WHERE id = ${req.params.id}
     `
 
-    if(song.length == 0){
+    if (song.length == 0) {
         res.status(400).json(
-            {message: `This id:${req.params.id} song not found`}
+            { message: `This id:${req.params.id} song not found` }
         )
         return
     }
 
     const file = req.file
 
-    if(!file){
-        res.status(404).json({message:"Please Provide a File"})
+    if (!file) {
+        res.status(404).json({ message: "Please Provide a File" })
         return
     }
 
     const fileBuffer = getBuffer(file)
 
 
-    if(!fileBuffer || !fileBuffer.content){
-        res.status(500).json({message:"Somthing went wrong to generate file buffer"})
+    if (!fileBuffer || !fileBuffer.content) {
+        res.status(500).json({ message: "Somthing went wrong to generate file buffer" })
         return
     }
 
     const cloud = await cloudinary.v2.uploader.upload(fileBuffer.content, {
-        folder:"Songs_Thumbnail"
+        folder: "Songs_Thumbnail"
     })
 
     const result = await sql`
@@ -194,31 +194,48 @@ export const addThumbnail=tryCatch(async(req:AuthenticatedRequest, res)=>{
     `
 
     res.status(200).json(
-        {message:"added thumbnail", result:result[0]}
+        { message: "added thumbnail", result: result[0] }
     )
 
+})
+
+export const deleteAlbum = tryCatch(async (req:AuthenticatedRequest, res)=>{
+    if (req.user?.role !== "admin") {
+        res.status(404).json(
+            { message: "You are Not Admin" }
+        )
+        return
+    }
 
 
+    const {id}=req.params
+    const albumId= await sql `SELECT FROM albums WHERE id = ${id}`
+    if (albumId.length === 0){
+        return res.status(404).json({message: "Album Not Found"})
+    }
+    await sql `DELETE FROM songs WHERE album_id = ${id}`
+    await sql `DELETE FROM albums WHERE id = ${id}`
+
+    res.status(200).json({message:"Album Delete Sucessfully"})
+})
 
 
+export const deleteSong = tryCatch(async(req:AuthenticatedRequest, res)=>{
+    if (req.user?.role !== "admin"){
+        return res.status(404).json({message:"You are Not Admin"})
+    }
 
+    const {id}=req.params
 
+    const songId= await sql `SELECT FROM songs WHERE id = ${id}`
 
+    if (songId.length === 0){
+        return res.status(400).json({message: "Song Not Found"})
+    }
 
+    await sql `DELETE FROM songs WHERE id = ${id}`
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return res.status(200).json({message: "Song delete Successfully"})
 
 
 })
