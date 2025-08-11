@@ -1,3 +1,46 @@
+import sql from "./config/db.js";
 import { tryCatch } from "./config/tryCatch.js";
 
-export const allAlbums = tryCatch(async(req,res)=>{})
+export const allAlbums = tryCatch(async(req,res)=>{
+    let albums ;
+
+    albums = await sql`SELECT * FROM albums`
+
+    return res.status(200).json({message:"Albums recive Successfully", albums:albums})
+})
+
+export const allSongs = tryCatch(async(req,res)=>{
+    let songs ;
+
+    songs = await sql`SELECT * FROM songs`
+
+    return res.status(200).json({message:"Songs recieve Successfully", songs:songs})
+})
+
+export const getSongByAlbumId = tryCatch(async(req, res)=>{
+    let albums, songs;
+    const {id}= req.params
+    albums = await sql`SELECT * FROM albums WHERE id =${id}`
+
+    songs = await sql`SELECT * FROM songs WHERE album_id = ${id}`
+
+    if (albums.length === 0){
+        return res.status(404).json({message:"Album Not Found"})
+    }
+
+    const response = {songs, albums:albums[0]}
+
+    return res.status(200).json({message: "Success", data:response})
+
+
+})
+
+
+export const getOneSong = tryCatch(async(req, res)=>{
+    const {id}= req.params
+    const song = await sql `SELECT * FROM songs WHERE id = ${id}`
+    if(song.length===0){
+        return res.json({message: "Song Not Found"}).status(404)
+    }
+    return res.json({data:song[0], message:"Success"}).status(200)
+})
