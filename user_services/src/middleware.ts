@@ -6,6 +6,21 @@ export interface AuthenticatedUser extends Request {
     user?: IUser | null
 }
 
+/**
+ * Middleware to authenticate a user based on a JWT token provided in the request headers.
+ *
+ * @param req - The incoming request object, expected to have a `token` header and an optional `owner` header.
+ * @param res - The response object used to send HTTP responses.
+ * @param next - The next middleware function in the Express stack.
+ * @returns A Promise that resolves when authentication is complete.
+ *
+ * @remarks
+ * - If the token is missing, responds with HTTP 403 and a "Please Login" message.
+ * - If the token is invalid or does not contain a valid user ID, responds with HTTP 403 and an "Invalid token" message.
+ * - If the user is not found in the database, responds with HTTP 404 and a "User Not Found" message.
+ * - On successful authentication, attaches the user object (excluding password) to `req.user` and calls `next()`.
+ * - On unexpected errors, responds with HTTP 500 and a "Something went wrong" message.
+ */
 export const isAuth = async (req: AuthenticatedUser, res: Response, next: NextFunction): Promise<void> => {
     try {
         const token = req.headers.token as string
