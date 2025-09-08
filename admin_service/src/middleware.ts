@@ -16,7 +16,7 @@ interface AuthenticatedUser extends Request {
     user?: IUser
 }
 
-dotenv.config()
+dotenv.config() 
 
 export const authAdmin = async (req: AuthenticatedUser, res: Response, next: NextFunction) => {
     try {
@@ -28,13 +28,14 @@ export const authAdmin = async (req: AuthenticatedUser, res: Response, next: Nex
             return res.status(403).json({ message: "please Login" })
 
         }
-
+        console.log("login token",token)
         const { data } = await axios.get(`${process.env.User_URL as string}/api/v1/user/me`, {
             headers: {
                 token,
                 owner:"Muhammad Inam"
             }
         })
+        console.log("login",data)
 
         // console.log(`middleware check `, data)
 

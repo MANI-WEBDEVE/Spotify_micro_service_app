@@ -82,7 +82,7 @@ export const addSongs = tryCatch(async (req: AuthenticatedRequest, res) => {
     }
 
     const { title, description, album } = req.body
-    const file = req.file
+    const file = req.file  
 
 
 
