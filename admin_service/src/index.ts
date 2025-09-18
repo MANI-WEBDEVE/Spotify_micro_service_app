@@ -3,8 +3,11 @@ import dotenv from "dotenv"
 import { sql } from "./config/db.js"
 import adminRouter from "./route.js"
 import { cloudinary_setup } from "./config/cloudinary.js"
+import redis from "redis"
+
 
 dotenv.config()
+
 
 const app = express()
 const PORT=process.env.PORT
@@ -12,6 +15,16 @@ const PORT=process.env.PORT
 app.use(express.json()) 
 
 cloudinary_setup()
+
+export const redis_db=redis.createClient({
+    password:process.env.REDIS_PASSWORD,
+    socket:{
+        host:process.env.REDIS_HOST,
+        port:Number(process.env.REDIS_PORT) as number
+    }
+})
+
+
 
 async function initDB(){
     try{
@@ -43,6 +56,8 @@ async function initDB(){
 }
 
 app.use("/api/v1", adminRouter)
+
+redis_db.connect().then(()=>console.log("redis db connect")).catch((error:any)=>console.log(error))
 
 initDB().then(()=>{
     app.listen(PORT, ()=> {
