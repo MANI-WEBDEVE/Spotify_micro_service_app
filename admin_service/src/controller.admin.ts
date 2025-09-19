@@ -3,6 +3,7 @@ import { tryCatch } from "./config/tryCatch.js";
 import getBuffer from "./config/DataUri.js";
 import cloudinary from "cloudinary"
 import { sql } from "./config/db.js";
+import { redis_db } from "./index.js";
 
 interface AuthenticatedRequest extends Request {
     user?: {
@@ -52,21 +53,21 @@ export const addAlbum = tryCatch(async (req: AuthenticatedRequest, res) => {
         folder: "Albums"
     })
 
-    //     const existFile = await sql`
-    //   SELECT * FROM albums WHERE thumbnail = ${cloud.secure_url}
-    // `;
-    //     if (existFile.length > 0) {
-    //         res.status(404).json({ message: "Thumbnail already exists" })
-    //         return
-    //     }
+   
 
-    // console.log(`cloud for admin service: `, cloud)
+    if(redis_db.isReady){
+        await redis_db.del("albums")
+        console.log("Cache Cleared for albums")
+    }
+
 
     const result = await sql`
         INSERT INTO albums (title, description, thumbnail) 
         VALUES (${title}, ${description}, ${cloud.secure_url}) 
         RETURNING *
     `
+
+    
     // console.log(`result for admin service:`, result)
     res.status(200).json(
         { message: "Album Created", album: result[0] }
@@ -144,6 +145,11 @@ export const addSongs = tryCatch(async (req: AuthenticatedRequest, res) => {
 
     `
 
+    if(redis_db.isReady){
+        await redis_db.del("songs")
+        console.log("Cache Cleared")
+    }
+
     res.status(200).json(
         { message: "Add Song Succes", result: result }
     )
@@ -193,6 +199,11 @@ export const addThumbnail = tryCatch(async (req: AuthenticatedRequest, res) => {
     RETURNING *
     `
 
+    if(redis_db.isReady){
+        await redis_db.del("songs")
+        console.log("Cache Cleared for songs")
+    }
+
     res.status(200).json(
         { message: "added thumbnail", result: result[0] }
     )
@@ -216,6 +227,12 @@ export const deleteAlbum = tryCatch(async (req:AuthenticatedRequest, res)=>{
     await sql `DELETE FROM songs WHERE album_id = ${id}`
     await sql `DELETE FROM albums WHERE id = ${id}`
 
+    if(redis_db.isReady){
+        await redis_db.del("albums")
+        await redis_db.del("songs")
+        console.log("Cache Cleared for albums and songs")
+    }
+
     res.status(200).json({message:"Album Delete Sucessfully"})
 })
 
@@ -234,7 +251,10 @@ export const deleteSong = tryCatch(async(req:AuthenticatedRequest, res)=>{
     }
 
     await sql `DELETE FROM songs WHERE id = ${id}`
-
+    if(redis_db.isReady){
+        await redis_db.del("songs")
+        console.log("Cache Cleared for songs")
+    }
     return res.status(200).json({message: "Song delete Successfully"})
 
 
