@@ -1,7 +1,7 @@
 import type React from "react"
 import Header from "./Header"
 import SideBar from "./SideBar"
-
+import Player from "./Player"
 interface LayoutProps {
     children: React.ReactNode
 }
@@ -18,7 +18,7 @@ const Layout:React.FC<LayoutProps> = ({children}) => {
                 {children}
             </div>
         </div>
-
+      <Player/>
     </div>
   </>
   )
