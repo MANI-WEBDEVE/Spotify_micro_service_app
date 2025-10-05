@@ -9,11 +9,11 @@ interface LayoutProps {
 const Layout:React.FC<LayoutProps> = ({children}) => {
   return (
   <>
-    <div className="h-screen">
-        <div className="h-[90%] flex">
+    <div className="h-screen ">
+        <div className="h-[90%] flex ">
             <SideBar/>
 
-            <div className="bg-[#121212] w-[100%] m-2 px-6 pt-4 rounded text-white overflow-auto lg:w-[70%]">
+            <div className="bg-[#121212] w-[100%] m-2 px-6 pt-4 rounded text-white overflow-auto lg:w-[71%]">
                 <Header/>
                 {children}
             </div>

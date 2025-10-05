@@ -44,6 +44,11 @@ const SideBar = () => {
           >
             <PlayListCard />
           </div>
+          <div className="h-full p-4 m-2 rounded bg-[#121212] items-start flex flex-col gap-2 pl-4 mt-4 font-semibold">
+            <h1>Let`s Findsome Podcast to follow.</h1>
+            <p className="font-light text-gray-300/50">we`ll keep you update on new episodes.</p>
+            <button className="rounded-full text-black bg-white px-3  cursor-pointer py-2 mt-2">Browse Podcast</button>
+          </div>
         </div>
       </div>
     </>
