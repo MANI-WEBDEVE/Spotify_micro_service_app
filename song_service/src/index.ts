@@ -2,9 +2,13 @@ import express from "express";
 import songRouter from "./router.js";
 import dotenv from "dotenv";
 import redis from "redis";
+import cors from "cors";
+
 dotenv.config();
 
+
 const app = express();
+app.use(cors());
 
 export const redis_db = redis.createClient({
   password: process.env.REDIS_PASSWORD,
