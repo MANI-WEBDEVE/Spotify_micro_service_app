@@ -4,10 +4,10 @@ import dotenv from "dotenv";
 import redis from "redis";
 import cors from "cors";
 
+const app = express();
 dotenv.config();
 
 
-const app = express();
 app.use(cors());
 
 export const redis_db = redis.createClient({

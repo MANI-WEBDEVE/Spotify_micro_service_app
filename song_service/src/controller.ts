@@ -34,6 +34,7 @@ export const allAlbums = tryCatch(async (req, res) => {
 
 export const allSongs = tryCatch(async (req, res) => {
   let songs;
+  console.log('get all songs request')
   const CACHE_EXPIRY = 1800;
   if (redis_db.isReady) {
     songs = await redis_db.get("songs");
